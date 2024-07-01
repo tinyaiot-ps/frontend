@@ -19,7 +19,6 @@ import { DataTable } from "@/components/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { ColumnFiltersState } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 
 type Props = {};
@@ -119,16 +118,11 @@ const columns: ColumnDef<Trashbin>[] = [
 
 export default function TrashbinsOverview({}: Props) {
   const [trashbinData, setTrashbinData] = useState([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
   const router = useRouter();
 
   const handleClick = useCallback((trashbin: Trashbin) => {
-    const path = window.location.pathname;
-    const parts = path.split("/");
-    const city = parts[2];
-    const type = parts[3];
+    const city = localStorage.getItem("cityName");
+    const type = localStorage.getItem("projectType");
     router.push(`/projects/${city}/${type}/trashbins/${trashbin.identifier}`);
   }, []);
 

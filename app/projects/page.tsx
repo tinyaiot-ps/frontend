@@ -8,13 +8,22 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface Project {
-    identifier: string;
-    name: string;
+  _id: string;
+  identifier: string;
+  name: string;
+  projectType: string;
+  cityName: string;
 }
-  
+
+function saveProjectDataLocally(project: any) {
+  localStorage.setItem("projectId", project.id);
+  localStorage.setItem("cityName", project.cityName);
+  localStorage.setItem("projectType", project.projectType);
+}
+
 export default function Projects() {
 
-  const [projectData, setProjectData] = useState([]);
+  const [projectData, setProjectData] = useState<Project[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,25 +34,14 @@ export default function Projects() {
           `http://localhost:${process.env.NEXT_PUBLIC_PORT}/api/v1/project`,
           {
             headers: {
-              Authorization: `Bearer ${token.replace(/"/g, "")}`,
+              Authorization: `Bearer ${token?.replace(/"/g, "")}`,
             },
           }
         );
 
-        // console.log(response.data);
-
-        // Step 1: Extract the projects array from the response data
         const projects = response.data.projects;
 
-        // Step 2: Store the project ID of the first project in local storage
-        // Assuming you want to store the _id of the first project
-        if (projects.length > 0) {
-          localStorage.setItem("projectId", projects[0]._id);
-        }
-
-        // Step 3: Map over the projects array to extract the necessary information
         const transformedData = projects.map((item: any) => {
-          console.log(item);
           return {
             id: item._id,
             identifier: item.identifier,
@@ -53,7 +51,6 @@ export default function Projects() {
           };
         });
 
-        // Step 4: Update the projectData state with this mapped array
         setProjectData(transformedData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -70,7 +67,7 @@ export default function Projects() {
           <Link
             href={`/projects/${project.cityName}/${project.projectType}`}
             key={project.identifier}
-            onClick={() => localStorage.setItem("projectId", project.id)}
+            onClick={() => saveProjectDataLocally(project)}
           >
               <CardContent>
                 <p>

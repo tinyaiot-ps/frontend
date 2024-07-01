@@ -96,10 +96,8 @@ export default function TrashbinDetail({
   }
 
   function getEditUrl(): string {
-    const path = window.location.pathname;
-    const parts = path.split("/");
-    const city = parts[2];
-    const type = parts[3];
+    const city = localStorage.getItem("cityName");
+    const type = localStorage.getItem("projectType");
     return `/projects/${city}/${type}/trashbins/${params.identifier}/edit`;
   }
 
