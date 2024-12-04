@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import api from "@/lib/axios-api";
+import axios from "axios";
 import { LatLngTuple } from "leaflet";
 import PageTitle from "@/components/PageTitle";
 import Map from "@/components/Map";
@@ -32,7 +32,7 @@ const MapPage = () => {
         const token = localStorage.getItem("authToken");
         const projectId = localStorage.getItem("projectId");
 
-        const trashbinResponse = await api.get(
+        const trashbinResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/trashbin?project=${projectId}`,
           {
             headers: {
@@ -42,7 +42,7 @@ const MapPage = () => {
         );
         setTrashbinData(trashbinResponse.data.trashbins);
 
-        const projectResponse = await api.get(
+        const projectResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/project/${projectId}`,
           {
             headers: {

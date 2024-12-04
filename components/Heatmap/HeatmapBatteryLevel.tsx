@@ -1,7 +1,7 @@
 import { Trashbin } from "@/app/types";
 import { Heatmap } from "./Heatmap";
 import { useEffect, useState } from "react";
-import api from "@/lib/axios-api";
+import axios from "axios";
 
 type Entry = {
   time: number; // Unix timestamp

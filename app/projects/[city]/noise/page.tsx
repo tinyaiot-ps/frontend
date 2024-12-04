@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import api from '@/lib/axios-api'
+import axios from "axios";
 import PageTitle from "@/components/PageTitle";
 import { CardContent } from "@/components/Card";
 import NoiseChart from "@/components/NoiseChart";
@@ -25,7 +25,7 @@ export default function NoiseDashboard() {
         const token = localStorage.getItem("authToken");
         const projectId = localStorage.getItem("projectId");
 
-        const projectResponse = await api.get(
+        const projectResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/project/${projectId}`,
           {
             headers: {
@@ -54,7 +54,7 @@ export default function NoiseDashboard() {
           sensorId = "668e6b79e921750c7a2fe08d";
         }
 
-        const historyResponse = await api.get(
+        const historyResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/history/sensor/${sensorId}`,
           {
             headers: {

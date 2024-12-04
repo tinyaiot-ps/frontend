@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import api from '@/lib/axios-api'
+import axios from "axios";
 import PageTitle from "@/components/PageTitle";
 import { DataTable } from "@/components/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
@@ -100,7 +100,7 @@ export default function TrashbinDetail({
         const token = localStorage.getItem("authToken");
 
         // Fetch trashbin data
-        const response = await api.get(
+        const response = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/trashbin/${params.identifier}`,
           {
             headers: {
@@ -112,7 +112,7 @@ export default function TrashbinDetail({
 
         // Fetch project settings
         const projectId = localStorage.getItem("projectId");
-        const projectResponse = await api.get(
+        const projectResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/project/${projectId}`,
           {
             headers: {
@@ -128,7 +128,7 @@ export default function TrashbinDetail({
         // Fetch history data of fill level and battery level
         // TODO: this is kind of a shitty solution. Maybe we should first determine what measureType a sensorId has and then do the request
         // Fetch first history data
-        const historyResponse0 = await api.get(
+        const historyResponse0 = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/history/sensor/${sensorIds[0]}`,
           {
             headers: {
@@ -155,7 +155,7 @@ export default function TrashbinDetail({
           setBatteryLevelData([]);
         }
         // Fetch second history data
-        const historyResponse1 = await api.get(
+        const historyResponse1 = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/history/sensor/${sensorIds[1]}`,
           {
             headers: {
@@ -181,7 +181,7 @@ export default function TrashbinDetail({
           setBatteryLevelData([]);
         }
         // Fetch third history data
-        const historyResponse2 = await api.get(
+        const historyResponse2 = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/history/sensor/${sensorIds[2]}`,
           {
             headers: {

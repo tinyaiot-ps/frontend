@@ -5,7 +5,7 @@ import Card, { CardContent, CardProps } from "@/components/Card";
 import { HeatmapFillLevel } from "@/components/Heatmap/HeatmapFillLevel";
 import { Trashbin } from "@/app/types";
 import React, { useCallback, useState, useEffect } from "react";
-import api from "@/lib/axios-api";
+import axios from "axios";
 import { useTranslation } from "@/lib/TranslationContext"; // Import the translation hook
 
 interface HistoryDataItem {
@@ -68,7 +68,7 @@ export default function Home() {
         const token = localStorage.getItem("authToken");
         const projectId = localStorage.getItem("projectId");
 
-        const allTrashbinsResponse = await api.get(
+        const allTrashbinsResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/trashbin?project=${projectId}`,
           {
             headers: {
@@ -79,7 +79,7 @@ export default function Home() {
         let transformedTrashbinData: Trashbin[] = allTrashbinsResponse.data.trashbins;
 
         // Get the currently assigned bins
-        const assignedTrashbinsResponse = await api.get(
+        const assignedTrashbinsResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/trash-collector/${COLLECTOR_ID}/trashbins`,
           {
             headers: {
@@ -103,7 +103,7 @@ export default function Home() {
           amount: transformedTrashbinData.length.toString(),
         }));
 
-        const projectResponse = await api.get(
+        const projectResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/project/${projectId}`,
           {
             headers: {

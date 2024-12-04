@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import api from '@/lib/axios-api'
+import axios from "axios";
 import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import LoadingComponent from "@/components/LoadingComponent";
@@ -27,7 +27,7 @@ const EditTrashbinPage = ({ params }: { params: { identifier: string } }) => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await api.get(
+        const response = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/trashbin/${params.identifier}`,
           {
             headers: {
