@@ -5,6 +5,7 @@ type ColorLegendProps = {
   height: number;
   width: number;
   colorScale: d3.ScaleLinear<string, string, never>;
+  thresholds: number[]
 };
 
 const COLOR_LEGEND_MARGIN = { top: 0, right: 0, bottom: 40, left: 0 };
@@ -13,6 +14,7 @@ export const ColorLegend = ({
   height,
   colorScale,
   width,
+  thresholds
 }: ColorLegendProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -22,10 +24,10 @@ export const ColorLegend = ({
     height - COLOR_LEGEND_MARGIN.top - COLOR_LEGEND_MARGIN.bottom;
 
   const domain = colorScale.domain();
-  const max = domain[domain.length - 1];
-  const xScale = d3.scaleLinear().range([0, boundsWidth]).domain([0, 10]);
+  const max = domain[domain.length-1];
+  const xScale = d3.scaleLinear().range([0, boundsWidth]).domain([0, thresholds[5]]);
 
-  const allTicks = xScale.ticks(4).map((tick, index) => {
+  const allTicks = xScale.ticks(thresholds.filter((value, index, array) => array.indexOf(value) === index).length-1).map((tick, index) => {
     return (
       <g key={index}>
         <line
@@ -41,7 +43,7 @@ export const ColorLegend = ({
           fontSize={12}
           textAnchor="middle"
         >
-          {tick === 10 ? "10+" : tick}
+          {tick}
         </text>
       </g>
     );

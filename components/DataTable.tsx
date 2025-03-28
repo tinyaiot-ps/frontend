@@ -27,6 +27,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "@/components/ui/input";
 import { Info, ArrowUpDown, MoveUp, MoveDown } from "lucide-react";
+import { useTranslation } from "@/lib/TranslationContext";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,6 +47,7 @@ export function DataTable<TData, TValue>({
   selectedRows,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const { t } = useTranslation();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -110,7 +112,7 @@ export function DataTable<TData, TValue>({
     document.body.removeChild(a);
   };  
 
-  return (
+   return (
     <div>
       {showSearchBar && (
         <div className="flex items-center py-4 px-1">

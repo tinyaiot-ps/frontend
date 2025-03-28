@@ -1,17 +1,21 @@
 "use client";
 
+import { ThemeProvider, useTheme } from "@/lib/ThemeContext";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import { TranslationProvider } from "../lib/TranslationContext";
+import "../app/globals.css"
 import { cn } from "../lib/utils";
 import SideNavbar from "@/components/SideNavbar";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useEffect, useState } from "react";
+//import { useTheme } from "@/lib/ThemeContext";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
 type HistoryStateArguments = [data: any, unused: string, url?: string | URL | null | undefined];
 
-// Override pushState and replaceState methods, as they otherwise don't trigger events 
-// when only navigating within the app instead of reloading the page
 const overrideHistoryMethods = () => {
   const pushState = history.pushState;
   history.pushState = function (...args: HistoryStateArguments) {
@@ -34,7 +38,6 @@ const overrideHistoryMethods = () => {
   });
 };
 
-
 export default function RootLayout({
   children,
 }: {
@@ -42,7 +45,16 @@ export default function RootLayout({
 }) {
   const [showNavigation, setShowNavigation] = useState(false);
   const [token, setToken] = useState<string>("");
+
   const [loading, setLoading] = useState(true);
+
+  // Add mounted state
+  const [mounted, setMounted] = useState(false);
+
+  // Set mounted to true after client-side rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     overrideHistoryMethods();
@@ -51,19 +63,15 @@ export default function RootLayout({
     setLoading(false);
   }, []);
 
-  // Enforce login on all pages except the login page
   useEffect(() => {
     if (loading) return;
-    // This effect depends on `token`, so it will re-run when `token` changes.
-    // Initially, it runs after the token is retrieved from localStorage.
     const pathname = window.location.pathname;
     const noAuthPaths = ["/login"];
     if (!token && !noAuthPaths.includes(pathname)) {
-      window.location.href = "/login"; // Redirect to login page
+      window.location.href = "/login";
     }
-  }, [token, loading]); // Depend on `token` to re-run this effect when it changes
+  }, [token, loading]);
 
-  // Hide the navigation bar on some subpages
   useEffect(() => {
     const noNavigationPaths = ["/login", "/projects"];
 
@@ -72,7 +80,7 @@ export default function RootLayout({
       setShowNavigation(!noNavigationPaths.includes(pathname));
     };
 
-    handlePathChange(); // Call initially to set the correct state
+    handlePathChange();
     window.addEventListener("locationchange", handlePathChange);
 
     return () => {
@@ -80,28 +88,48 @@ export default function RootLayout({
     };
   }, []);
 
-  return (
-    <html lang="en">
+  const { theme } = useTheme(); // Get theme context
+
+   // Prevent rendering until mounted to avoid hydration errors
+   if (!mounted) {
+    return null; // Return nothing until mounted
+  }
+
+return (
+  <ThemeProvider> 
+    <html lang="en" data-theme={theme}>
       <head>
         <title>TinyAIoT Dashboard</title>
       </head>
       <body
         className={cn(
-          "min-h-screen w-full bg-white text-black flex ",
+          `min-h-screen w-full flex ${
+            theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+          }`,
           inter.className,
           {
             "debug-screens": process.env.NODE_ENV === "development",
           }
         )}
       >
-        {showNavigation && (
-          <div className="h-screen">
-            <SideNavbar />
-          </div>
-        )}
-        {/* Main page */}
-        <div className="p-8 w-full">{children}</div>
+
+      
+        <TranslationProvider>
+          {/* Language Switcher in the Header */}
+          <header className="flex justify-end p-4 bg-gray-100">
+            <LanguageSwitcher />
+            <ThemeSwitcher />
+          </header>
+          {showNavigation && (
+            <div className="h-screen">
+              <SideNavbar />
+            </div>
+          )}
+          <main className="p-8 w-full">{children}</main>
+        </TranslationProvider>
+     
       </body>
     </html>
+  </ThemeProvider>
   );
 }

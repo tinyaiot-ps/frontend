@@ -160,3 +160,132 @@
   visibility: visible;
   opacity: 1;
 }
+/* Add this to your global CSS or a dedicated CSS module */
+.language-switcher-container {
+  position: fixed; /* Fixed position to stay at the top-right of the viewport */
+  top: 16px; /* Distance from the top */
+  right: 16px; /* Distance from the right */
+  z-index: 1000; /* Ensure it's above other elements */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.language-switcher-container .icon-button {
+  width: 40px; /* Adjust size */
+  height: 40px;
+  background: white;
+  border-radius: 50%; /* Circular button */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.language-switcher-container .icon-button:hover {
+  transform: scale(1.1); /* Slightly enlarge on hover */
+  background-color: #f0f0f0; /* Light gray hover effect */
+}
+
+/* Apply background and text colors dynamically */
+body {
+  background-color: #ffffff; /* Light mode */
+  color: #000000;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+
+  /* Light Mode Input */
+.input {
+  background-color: hsl(var(--input)); /* Light mode background */
+  color: hsl(var(--foreground));      /* Light mode text color */
+  border: 1px solid hsl(var(--border)); /* Light mode border */
+}
+
+/* Dark Mode Input */
+html.dark .input {
+  background-color: hsl(var(--secondary)); /* Dark mode background */
+  color: hsl(var(--foreground));           /* Dark mode text color */
+  border: 1px solid hsl(var(--border));    /* Dark mode border */
+}
+ 
+
+}
+
+/* Additional utility classes for reusable theming */
+.card {
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+
+.border {
+  border-color: hsl(var(--border));
+}
+
+.input {
+  background-color: hsl(var(--input));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+
+/* Smooth transition for theme toggle */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Container for theme switcher button */
+.theme-switcher-container {
+  position: fixed;
+  top: 16px; /* Align with the language switcher */
+  right: 72px; /* Positioned near the language switcher */
+  z-index: 1000; /* Ensure it appears above other elements */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-switcher-container .icon-button {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 50%; /* Circular button */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.theme-switcher-container .icon-button:hover {
+  transform: scale(1.1); /* Hover effect */
+  background-color: #f0f0f0; /* Light gray hover effect */
+}
+
+
+html.light body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+html.dark body {
+  background-color: #1a202c; /* Dark mode */
+  color: #ffffff;
+}
+
+/* Focus state for input fields */
+.input:focus {
+  outline: none;
+  border-color: hsl(var(--ring)); /* Focus ring color */
+  box-shadow: 0 0 0 2px hsl(var(--ring)); /* Outer ring effect */
+}
+
+/* Placeholder color */
+.input::placeholder {
+  color: hsl(var(--muted-foreground)); /* Subtle placeholder color */
+}
+
+/* Dark mode placeholder */
+html.dark .input::placeholder {
+  color: hsl(var(--muted-foreground)); /* Match dark mode style */
+}

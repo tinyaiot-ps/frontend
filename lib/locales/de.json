@@ -1,0 +1,117 @@
+{
+    "menu": {
+
+      "current_language": "Aktuelle Sprache",
+      "Date":"Datum:",
+      "bin":"Mülleimer",
+      "dashboard": "Dashboard",
+      "Your Projects":"Ihre Projekte",
+      "Export to CSV":"Nach CSV exportieren",
+      "route_planning": "Routenplanung",
+      "loading_map": "Karte wird geladen...",
+      "show_route": "Route anzeigen",
+      "export_to_maps": "In Google Maps exportieren",
+      "assign_route": "Ausgewählte Mülleimer verstecken",
+      "unassign_all_bins": "Alle Mülleimer anzeigen",
+      "select_bins_instruction": "Wählen Sie die Mülleimer für die Route aus, indem Sie sie auf der Karte oder Tabelle anklicken",
+      "map_view": "Kartenansicht",
+      "table_view": "Tabellenansicht",
+      "identifier": "Kennung",
+      "name": "Name",
+      "fill_level": "Füllstand",
+      "fill_level_change": "Füllstandsänderung",
+      "google_maps_link": "Google Maps-Link",
+      "copy": "Kopieren",
+      "Distribution of fill levels of all bins":"Füllstände aller Mülleimer",
+      "nearly_full":"fast voll",
+      "total_number":"Gesamtzahl",
+      "low_battery":"schwache Batterie",
+      "broken_sensors":"defekte Sensoren",
+      "overview": "Überblick",
+      "map": "Karte",
+      "route": "Route",
+      "data": "Daten",
+      "settings": "Einstellungen",
+      "trashbins": "Mülleimer",
+      "project": "Projekt",
+      "project_setting": "Projekteinstellungen",
+      "logout": "Abmelden",
+      "account": "Konto",
+      "location": "Ort",
+      "last_emptied": "Zuletzt geleert",
+      "battery_level": "Batteriestand",
+      "signal_strength": "Signalstärke",
+      "assigned": "Zugewiesen",
+      "project_settings": "Projekteinstellungen",
+      "coordinates_city_center": "Koordinaten (Breitengrad, Längengrad) des Stadtzentrums.",
+      "save_settings": "Einstellungen speichern",
+      "cancel": "Abbrechen",
+      "loading": "Wird geladen...",
+      "coordinates_city_center_info": "Die Karten sind auf diese Koordinate zentriert.",
+      "coordinates_depot": "Koordinaten (Breitengrad, Längengrad) des Depots.",
+      "coordinates_depot_info": "Die Routenplanung nimmt diese Koordinaten als Start- und Endpunkt.",
+      "zoom_level": "Zoom",
+      "zoom_level_info": "Faktor, um wie viel die Karte vergrößert wird.",
+      "fill_level_interval": "Intervall der Füllstände",
+      "fill_level_interval_info": "Über wie viele Stunden die Füllstandsänderung berechnet wird.",
+      "fill_level_thresholds": "Schwellenwerte für Füllstände",
+      "fill_level_thresholds_info": "Basis für Farbkodierung im gesamten Dashboard.",
+      "battery_level_thresholds": "Schwellenwerte für Batteriestände",
+      "Previous":"Vorherige",
+      "Next":"Nächste",
+      "battery_level_thresholds_info": "Basis für Farbkodierung im gesamten Dashboard."
+    
+    }, "tooltips": {
+      "search": "Nach Name, Standort oder Kennung suchen.",
+      "sort": "Sortieren durch Klicken auf die Spaltenüberschriften."
+    },  "placeholders": {
+      "search": "Suchen..."
+    },
+        "trashbin": {
+    "title": "Mülleimer {{name}} ({{identifier}})",
+    "editButton": "Mülleimer bearbeiten",
+    "loadingHistory": "Verlauf wird geladen...",
+    "noHistory": "Keine Verlaufsdaten verfügbar",
+    "tabs": {
+      "graphicalView": "Grafische Ansicht",
+      "tableView": "Tabellenansicht"
+    },
+    "fillLevel": "Füllstand",
+    "batteryLevel": "Batteriestand",
+    "location": "Standort",
+    "viewOnGoogleMaps": "Auf Google Maps ansehen",
+    "lastEmptied": "Zuletzt geleert",
+    "signalStrength": "Signalstärke",
+    "notAvailable": "Nicht verfügbar"
+  },
+    "login": {
+    "title": "Anmeldung",
+    "description": "Geben Sie Ihre Name und Ihr Passwort ein, um sich bei Ihrem Konto anzumelden",
+    "name": "Name",
+    "emailPlaceholder": "Ihre Name",
+    "password": "Passwort",
+    "passwordPlaceholder": "Ihr Passwort",
+    "loginButton": "Anmelden"
+  },
+  "page": {
+    "logout": "Abmelden",
+    "comingSoon": "Theme-Einstellungen kommen bald!"
+  },
+  "editTrashbin": {
+    "title": "Mülleimer bearbeiten {{name}} ({{identifier}})",
+    "nameLabel": "Name",
+    "coordinatesLabel": "Koordinaten (Breitengrad, Längengrad) des Mülleimers.",
+    "coordinatesTooltip": "Breitengrad und Längengrad sind der erste Eintrag in der Liste, wenn Sie mit der rechten Maustaste auf die Karte in Google Maps klicken.",
+    "locationLabel": "Standort",
+    "imageLabel": "Bild-URL",
+    "saveButton": "Speichern",
+    "cancelButton": "Abbrechen"
+  },
+      "map": {
+      "title": "Karte",
+      "label": "Mülleimer",
+      "capacity": "Kapazität",
+      "signal": "Signalstärke"
+    }
+  }
+  

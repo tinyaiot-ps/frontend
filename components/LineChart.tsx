@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import ResizeObserver from "resize-observer-polyfill";
 import * as d3 from "d3";
+import { useTheme } from "../lib/ThemeContext"; // Adjusted import path for ThemeContext
 
 interface DataItem {
   timestamp: Date;
@@ -26,16 +27,16 @@ const LineChart: React.FC<LineChartProps> = ({ historyData, green, yellow, red }
   const mainChartRef = useRef<SVGSVGElement>(null);
   const scrollableDivRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const { theme } = useTheme();
 
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(entries => {
+    const resizeObserver = new ResizeObserver((entries) => {
       if (!entries || entries.length === 0) return;
       const { width, height } = entries[0].contentRect;
       setDimensions({ width, height });
     });
 
     const currentRef = mainChartRef.current;
-
     if (currentRef) {
       resizeObserver.observe(currentRef);
     }
@@ -51,10 +52,17 @@ const LineChart: React.FC<LineChartProps> = ({ historyData, green, yellow, red }
     if (dimensions.width === 0 || dimensions.height === 0) return;
     if (!mainChartRef.current) return;
 
-    const margin = { top: 5, right: 5, bottom: 100, left: 40 };
+    
+    const margin = { top: 5, right: 5, bottom: 130, left: 90 }; // Increase left margin
+
+    
+
     const height = dimensions.height - margin.top - margin.bottom;
-    const pointWidth = 10;
-    const fullWidth = pointWidth * historyData.length;
+    //const fullWidth = dimensions.width - margin.left - margin.right;
+
+    
+    //const height = Math.max(dimensions.height - margin.top - margin.bottom, 400); // Ensure a decent height
+    const fullWidth = Math.max(dimensions.width - margin.left - margin.right, 800); // Ensure a minimum width
 
     d3.select(mainChartRef.current).selectAll("*").remove();
 
@@ -65,59 +73,63 @@ const LineChart: React.FC<LineChartProps> = ({ historyData, green, yellow, red }
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const x = d3.scalePoint()
-      .domain(historyData.map(d => new Date(d.timestamp).toString()))
-      .range([0, fullWidth])
-      .padding(0.5);
+    const timeDomain = d3.extent(historyData, d => d.timestamp) as [Date, Date];
+    const x = d3.scaleTime()
+      .domain(timeDomain)
+      .range([0, fullWidth]);
 
     const y = d3.scaleLinear().domain([0, 100]).range([height, 0]);
 
+    const sortedData = [...historyData].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+
     const line = d3.line<DataItem>()
-      .x(d => x(new Date(d.timestamp).toString()) || 0)
-      .y(d => y(d.measurement));
+      .x(d => x(d.timestamp))
+      .y(d => y(d.measurement))
+      .curve(d3.curveMonotoneX);
 
     const xAxis = d3.axisBottom(x)
-      .tickValues(x.domain().filter((_d, i) => i % 10 === 9))
-      .tickFormat((domainValue: string) => d3.timeFormat('%Y-%m-%d %H:%M')(new Date(domainValue)));
+      .tickFormat((domainValue) => d3.timeFormat('%Y-%m-%d %H:%M')(domainValue as Date))
+      .ticks(10);
 
-    svg.append('g')
-      .attr('transform', `translate(0,${height})`)
+    svg
+      .append("g")
+      .attr("transform", `translate(0,${height})`)
       .call(xAxis)
       .selectAll('text')
-      .attr('transform', 'rotate(-45)')
+      .attr('transform', 'rotate(-45)') // Rotate text to avoid overlap
       .style('text-anchor', 'end')
       .attr('dx', '-.8em');
 
+    // Color range bands
+    svg.append("rect")
+      .attr("x", 0)
+      .attr("y", y(green[1]))
+      .attr("width", fullWidth)
+      .attr("height", y(green[0]) - y(green[1]))
+      .attr("fill", "green")
+      .attr("opacity", 0.15);
+
     svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", y(green[1]))
-    .attr("width", fullWidth)
-    .attr("height", y(green[0]) - y(green[1]))
-    .attr("fill", "green")
-    .attr("opacity", 0.15);
-  
-  svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", y(yellow[1]))
-    .attr("width", fullWidth)
-    .attr("height", y(yellow[0]) - y(yellow[1]))
-    .attr("fill", "yellow")
-    .attr("opacity", 0.15);
-  
-  svg
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", y(red[1]))
-    .attr("width", fullWidth)
-    .attr("height", y(red[0]) - y(red[1]))
-    .attr("fill", "red")
-    .attr("opacity", 0.15);
+        .append("rect")
+      .attr("x", 0)
+      .attr("y", y(yellow[1]))
+      .attr("width", fullWidth)
+      .attr("height", y(yellow[0]) - y(yellow[1]))
+      .attr("fill", "yellow")
+      .attr("opacity", 0.15);
+
+    svg
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", y(red[1]))
+      .attr("width", fullWidth)
+      .attr("height", y(red[0]) - y(red[1]))
+      .attr("fill", "red")
+      .attr("opacity", 0.15);
 
     svg
       .append("path")
-      .datum(historyData)
+      .datum(sortedData)
       .attr("fill", "none")
       .attr("stroke", "black")
       .attr("stroke-width", 1.5)
@@ -125,17 +137,19 @@ const LineChart: React.FC<LineChartProps> = ({ historyData, green, yellow, red }
 
     svg
       .selectAll(".dot")
-      .data(historyData)
+      .data(sortedData)
       .enter()
       .append("circle")
       .attr("class", "dot")
       .attr("stroke", "black")
       .attr("fill", d => determineColor(d.measurement, green, yellow, red))
-      .attr("cx", d => String(x(new Date(d.timestamp).toString())))
+      .attr("cx", d => x(d.timestamp))
       .attr("cy", d => y(d.measurement))
       .attr("r", 3);
 
-    const tooltip = d3.select('body').append('div')
+    const tooltip = d3
+      .select('body')
+      .append('div')
       .attr('class', 'tooltip')
       .style('position', 'absolute')
       .style('background', '#fff')
@@ -145,11 +159,12 @@ const LineChart: React.FC<LineChartProps> = ({ historyData, green, yellow, red }
       .style('pointer-events', 'none')
       .style('opacity', 0);
 
-    svg.selectAll('.dot-overlay')
-      .data(historyData)
+    svg
+      .selectAll('.dot-overlay')
+      .data(sortedData)
       .enter().append('circle')
       .attr('class', 'dot-overlay')
-      .attr('cx', d => x(new Date(d.timestamp).toString()) ?? 0)
+      .attr('cx', d => x(d.timestamp))
       .attr('cy', d => y(d.measurement))
       .attr('r', 10)
       .style('opacity', 0)
@@ -158,20 +173,19 @@ const LineChart: React.FC<LineChartProps> = ({ historyData, green, yellow, red }
         tooltip.transition()
           .duration(200)
           .style('opacity', .95);
-        tooltip.html(`Timestamp: ${d3.timeFormat('%Y-%m-%d %H:%M')(new Date(d.timestamp))}<br/>Measurement: ${Math.round(d.measurement)}%`)
+        tooltip.html(`Timestamp: ${d3.timeFormat('%Y-%m-%d %H:%M')(d.timestamp)}<br/>Measurement: ${Math.round(d.measurement)}%`)
           .style('left', `${event.pageX - 260}px`)
           .style('top', `${event.pageY + 10}px`);
       })
-      .on('mouseout', () => {
-        tooltip.transition()
-          .duration(500)
-          .style('opacity', 0);
+      .on("mouseout", () => {
+        tooltip.transition().duration(500).style("opacity", 0);
       });
 
+    // Y-Axis
     d3.select(yAxisRef.current).selectAll("*").remove();
     const yAxis = d3.axisLeft(y)
       .tickValues([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
-      .tickFormat((d) => `${d}%`);
+      .tickFormat(d => `${d}%`);
 
     d3.select(yAxisRef.current)
       .attr("width", margin.left)
@@ -179,29 +193,33 @@ const LineChart: React.FC<LineChartProps> = ({ historyData, green, yellow, red }
       .append("g")
       .attr("transform", `translate(${margin.left - 1},${margin.top})`)
       .call(yAxis);
+      // Remove the domain (the line) from the static y-axis
+      d3.select(yAxisRef.current).select(".domain").remove();
+      
+      // Remove the static ticks (labels and tick marks)
+     d3.select(yAxisRef.current).selectAll(".tick").remove(); 
 
-    d3.select(yAxisRef.current)
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left)
-      .attr("x", 0 - height / 2)
-      .attr("dy", "1em")
-      .style("text-anchor", "middle")
-      .text("Fill Level (%)");
+
+    // Step 2: Render Y-Axis LINE inside the scrollable chart (Moves with scroll)
+    svg.append("g")
+    .attr("class", "y-axis")
+    .attr("transform", `translate(-1, 0)`) // Move slightly left for alignment
+    .call(yAxis);
+    
 
   }, [dimensions, historyData, green, yellow, red]);
 
-    // Scroll to the right when the component is mounted to see the latest data
-    useEffect(() => {
-      if (scrollableDivRef.current) {
-        scrollableDivRef.current.scrollLeft = scrollableDivRef.current.scrollWidth;
-      }
-    }, [dimensions]);
+  // Ensure scrolling behavior after chart resizing
+  useEffect(() => {
+    if (scrollableDivRef.current) {
+      scrollableDivRef.current.scrollLeft = scrollableDivRef.current.scrollWidth;
+    }
+  }, [dimensions]);
 
   return (
-    <div className="relative w-full h-[400px]">
-      <svg ref={yAxisRef} className="absolute left-0 top-0"></svg>
-      <div className="overflow-x-scroll h-full ml-10" ref={scrollableDivRef}>
+    <div className="relative w-full h-[500px]"> {/* Increase height */}
+      <svg ref={yAxisRef} className="absolute left-0 top-0 h-full"></svg>
+      <div className="overflow-x-scroll h-full ml-10 bg-transparent" ref={scrollableDivRef}>
         <svg ref={mainChartRef} className="block h-full -ml-10"></svg>
       </div>
     </div>

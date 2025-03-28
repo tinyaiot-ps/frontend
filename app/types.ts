@@ -1,4 +1,5 @@
 type Trashbin = {
+  updatedAt: string | number | Date;
   _id: string;
   identifier: string;
   coordinates: [number, number];
@@ -10,6 +11,7 @@ type Trashbin = {
   signalStrength: number;
   image: string;
   lastEmptied: Date;
+  sensors: string[];
 };
 
 export type { Trashbin };

@@ -15,6 +15,7 @@ type RendererProps = {
   data: Dataset;
   setHoveredCell: (hoveredCell: InteractionData | null) => void;
   colorScale: d3.ScaleLinear<string, string, never>;
+  isDarkMode: boolean; // Dark mode added
 };
 
 export const Renderer = ({
@@ -23,6 +24,7 @@ export const Renderer = ({
   data,
   setHoveredCell,
   colorScale,
+  isDarkMode, // Added Dark mode here
 }: RendererProps) => {
   // bounds = area inside the axis
   const boundsWidth = width - MARGIN.right - MARGIN.left;
@@ -62,6 +64,7 @@ export const Renderer = ({
     }
 
     return (
+    
       <rect
         key={i}
         x={xPos}
@@ -80,6 +83,7 @@ export const Renderer = ({
           });
         }}
       />
+    
     );
   });
 
@@ -94,7 +98,8 @@ export const Renderer = ({
           dominantBaseline="middle"
           fontSize={10}
           stroke="none"
-          fill="black"
+          fill={isDarkMode ? "#FFFFFF" : "#000000"} // Dynamic color
+         
         >
           {name}
         </text>
@@ -109,6 +114,7 @@ export const Renderer = ({
       height={height}
       onMouseLeave={() => setHoveredCell(null)}
       className="-ml-12"
+      style={{ fill: isDarkMode ? "#FFFFFF" : "#000000" }} // Set global fill for the entire SVG
     >
       <g
         width={boundsWidth}
